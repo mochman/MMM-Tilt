@@ -1,6 +1,7 @@
 Module.register("MMM-Tilt", {
     defaults: {
         URL: "",
+		timeBuffer: 0, //Offsets the time if displayed incorrectly
         updateInterval: 1000 * 3600, //Update every hour
         animationSpeed: 1000 * 2,
         initialLoadDelay: 1000 * 5
@@ -37,38 +38,40 @@ Module.register("MMM-Tilt", {
 		table.classList.add("xsmall", "table");
 		var headerRow = document.createElement("tr");
 		var nameLabel = document.createElement("th");
+		nameLabel.className = "left";
 		nameLabel.innerHTML = "Beer Name";
 		headerRow.appendChild(nameLabel);
 		var tempLabel = document.createElement("th");
-        	tempLabel.innerHTML = "Temp";
 		tempLabel.className = "center";
-        	headerRow.appendChild(tempLabel);
+		tempLabel.innerHTML = "Temp";
+		headerRow.appendChild(tempLabel);
 		var gravLabel = document.createElement("th");
-        	gravLabel.innerHTML = "Gravity";
 		gravLabel.className = "center";
-        	headerRow.appendChild(gravLabel);
+		gravLabel.innerHTML = "Gravity";
+		headerRow.appendChild(gravLabel);
 		var timeLabel = document.createElement("th");
-        	timeLabel.innerHTML = "Updated";
 		timeLabel.className = "center";
-        	headerRow.appendChild(timeLabel);		
+		timeLabel.innerHTML = "Updated";
+		headerRow.appendChild(timeLabel);		
 		table.appendChild(headerRow);
 
 		var row = document.createElement("tr");
 		var nameCell = document.createElement("td");
 		nameCell.innerHTML = this.beerName;
+		nameCell.className = "left";
 		row.appendChild(nameCell);
 		var tempCell = document.createElement("td");
 		tempCell.innerHTML = this.temperature + "&deg;";
 		tempCell.className = "center";
-        	row.appendChild(tempCell);
+		row.appendChild(tempCell);
 		var gravCell = document.createElement("td");
-        	gravCell.innerHTML = this.gravity;
-        	gravCell.className = "center";
-        	row.appendChild(gravCell);
+		gravCell.innerHTML = this.gravity;
+		gravCell.className = "center";
+		row.appendChild(gravCell);
 		var timeCell = document.createElement("td");
-        	timeCell.innerHTML = convertTime(this.timepoint);
-        	timeCell.className = "center";
-        	row.appendChild(timeCell);
+		timeCell.innerHTML = this.convertTime(this.timepoint + this.config.timeBuffer);
+		timeCell.className = "center";
+		row.appendChild(timeCell);
 		table.appendChild(row);
 
 		wrapper.appendChild(table);
@@ -100,8 +103,15 @@ Module.register("MMM-Tilt", {
 		this.updateDom(this.config.animationSpeed);
 	},
 
+	niceDate: function(fullDate) {
+		var days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+		var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		return(fullDate.getDate() + " " + months[fullDate.getMonth()] + " " + fullDate.getHours() + ":" + fullDate.getMinutes());
+	},
+
 	convertTime: function(oldValue) {
-		return new Date((oldValue - (25567 + 2))*86400*1000);
+		var fullDate = new Date((oldValue - (25567 + 2))*86400*1000);
+		return this.niceDate(fullDate);
 	},
 
     scheduleUpdate: function(delay) {
