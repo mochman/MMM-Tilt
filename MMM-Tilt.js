@@ -90,7 +90,8 @@ Module.register("MMM-Tilt", {
 				}
 			}
 		};
-		newRequest.send();        
+		newRequest.send();
+		self.scheduleUpdate(self.config.updateInterval);        
     },
 
 	processData: function(data) {
