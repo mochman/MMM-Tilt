@@ -40,13 +40,17 @@ Module.register("MMM-Tilt", {
 		nameLabel.innerHTML = "Beer Name";
 		headerRow.appendChild(nameLabel);
 		var tempLabel = document.createElement("th");
-        tempLabel.innerHTML = "Temp";
+        	tempLabel.innerHTML = "Temp";
 		tempLabel.className = "center";
-        headerRow.appendChild(tempLabel);
+        	headerRow.appendChild(tempLabel);
 		var gravLabel = document.createElement("th");
-        gravLabel.innerHTML = "Gravity";
+        	gravLabel.innerHTML = "Gravity";
 		gravLabel.className = "center";
-        headerRow.appendChild(gravLabel);
+        	headerRow.appendChild(gravLabel);
+		var timeLabel = document.createElement("th");
+        	timeLabel.innerHTML = "Updated";
+		timeLabel.className = "center";
+        	headerRow.appendChild(timeLabel);		
 		table.appendChild(headerRow);
 
 		var row = document.createElement("tr");
@@ -56,11 +60,15 @@ Module.register("MMM-Tilt", {
 		var tempCell = document.createElement("td");
 		tempCell.innerHTML = this.temperature + "&deg;";
 		tempCell.className = "center";
-        row.appendChild(tempCell);
+        	row.appendChild(tempCell);
 		var gravCell = document.createElement("td");
-        gravCell.innerHTML = this.gravity;
-        gravCell.className = "center";
-        row.appendChild(gravCell);
+        	gravCell.innerHTML = this.gravity;
+        	gravCell.className = "center";
+        	row.appendChild(gravCell);
+		var timeCell = document.createElement("td");
+        	timeCell.innerHTML = convertTime(this.timepoint);
+        	timeCell.className = "center";
+        	row.appendChild(timeCell);
 		table.appendChild(row);
 
 		wrapper.appendChild(table);
@@ -83,7 +91,6 @@ Module.register("MMM-Tilt", {
     },
 
 	processData: function(data) {
-		console.log(data);
 		this.timepoint = data.Timepoint;
 		this.beerName = data.Beer;
 		this.gravity = data.SG;
@@ -91,6 +98,10 @@ Module.register("MMM-Tilt", {
 		this.color = data.Color;
 		this.loaded = true;
 		this.updateDom(this.config.animationSpeed);
+	},
+
+	convertTime: function(oldValue) {
+		return new Date((oldValue - (25567 + 2))*86400*1000);
 	},
 
     scheduleUpdate: function(delay) {
